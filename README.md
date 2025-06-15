@@ -54,7 +54,7 @@ npm run dev
 
 This project is built with:
 
-- Vite
+- Vite (now replaced with Parcel)
 - TypeScript
 - React
 - shadcn-ui
