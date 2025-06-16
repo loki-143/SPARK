@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Play, Upload } from "lucide-react";
+const apiUrl = process.env.API_URL;
 
 const languageMap = {
   python: 71,
@@ -46,7 +47,7 @@ const CodeEditor = () => {
     setIsLoading(true);
     setOutput("Running...");
     try {
-      const submission = await axios.post(`${import.meta.env.VITE_API_URL}/run`, {
+      const submission = await axios.post(`${apiUrl}/run`, {
       source_code: code,
       language_id: languageMap[language],
       stdin: "Judge0" // or take from input
@@ -59,6 +60,7 @@ setOutput(output || stderr || compile_output || `No output (status: ${status})`)
 
     } catch (error) {
       setOutput("Error executing code");
+      console.error("Execution error:", error);
     }
     setIsLoading(false);
   };
