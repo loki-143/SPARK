@@ -46,7 +46,7 @@ const CodeEditor = () => {
     setIsLoading(true);
     setOutput("Running...");
     try {
-      const submission = await axios.post("http://localhost:5000/run", {
+      const submission = await axios.post(`${import.meta.env.VITE_API_URL}/run`, {
       source_code: code,
       language_id: languageMap[language],
       stdin: "Judge0" // or take from input
