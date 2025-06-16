@@ -18,16 +18,6 @@ const ProblemHeader = () => {
                   <span className="text-gray-400">/</span>
                   <span className="font-medium text-gray-700">Problem {problem.id}</span>
                 </div>
-                <div className="flex items-center space-x-4">
-                  <Button variant="outline" size="sm">
-                    <Upload className="mr-2 h-4 w-4" />
-                    Submit
-                  </Button>
-                  <Button size="sm">
-                    <Play className="mr-2 h-4 w-4" />
-                    Run Code
-                  </Button>
-                </div>
               </div>
             </div>
           </header>

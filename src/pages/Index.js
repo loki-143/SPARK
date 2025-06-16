@@ -71,14 +71,14 @@ const Index = () => {
               </div>
             </div>
             <nav className="hidden md:flex space-x-8">
-              <Link to="/" className="text-gray-900 hover:text-blue-600 transition-colors">Contests</Link>
-              <Link to="/problems" className="text-gray-600 hover:text-blue-600 transition-colors">Problems</Link>
+              <Link to="/contest/:id" className="text-gray-900 hover:text-blue-600 transition-colors">Contests</Link>
+              <Link to="/problem/:id" className="text-gray-600 hover:text-blue-600 transition-colors">Problems</Link>
               <Link to="/leaderboard" className="text-gray-600 hover:text-blue-600 transition-colors">Leaderboard</Link>
               <Link to="/dashboard" className="text-gray-600 hover:text-blue-600 transition-colors">Dashboard</Link>
             </nav>
             <div className="flex items-center space-x-4">
-              <Button variant="outline" size="sm">Login</Button>
-              <Button size="sm">Sign Up</Button>
+              <Link to="/auth"><Button variant="outline" size="sm">Login</Button></Link>
+              <Link to="/auth"><Button size="sm">Sign Up</Button></Link>
             </div>
           </div>
         </div>

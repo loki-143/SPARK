@@ -10,6 +10,7 @@ import ProblemPage from "./pages/ProblemPage";
 import LeaderboardPage from "./pages/LeaderboardPage";
 import DashboardPage from "./pages/DashboardPage";
 import NotFound from "./pages/NotFound";
+import AuthPage from "./pages/AuthPage";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ function App() {
             <Route path="/leaderboard" element={<LeaderboardPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="*" element={<NotFound />} />
+            <Route path="/auth" element={<AuthPage />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
