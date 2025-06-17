@@ -16,57 +16,59 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Play, Upload } from "lucide-react";
-const apiUrl = process.env.API_URL;
+import { useToast } from "@/components/ui/use-toast";
+import { languageMap, templateMap } from "../utils/constants";
 
-const languageMap = {
-  python: 71,
-  java: 62,
-  javascript: 63,
-  cpp: 54,
-};
+const API_URL = 'http://localhost:5000';
 
-const templateMap = {
-  python: `def twoSum(nums, target):\n    # Write your solution here\n    pass`,
-  java: `public class Solution {\n    public static void main(String[] args) {\n        // Write your solution here\n    }\n}`,
-  javascript: `function twoSum(nums, target) {\n    // Write your solution here\n}`,
-  cpp: `#include <iostream>\nusing namespace std;\n\nint main() {\n    // Write your solution here\n    return 0;\n}`,
-};
-
-const CodeEditor = () => {
-  const [language, setLanguage] = useState("python");
-  const [code, setCode] = useState(templateMap["python"]);
+const CodeEditor = ({ 
+  code, 
+  language, 
+  onCodeChange, 
+  onLanguageChange
+}) => {
   const [output, setOutput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
   const handleLanguageChange = (value) => {
-    setLanguage(value);
-    setCode(templateMap[value]);
+    onLanguageChange(value);
   };
 
   const handleExecute = async () => {
     setIsLoading(true);
     setOutput("Running...");
     try {
-      const submission = await axios.post(`${apiUrl}/run`, {
-      source_code: code,
-      language_id: languageMap[language],
-      stdin: "Judge0" // or take from input
-        });
-
-        
+      const submission = await axios.post(`${API_URL}/run`, {
+        source_code: code,
+        language_id: languageMap[language],
+        stdin: "Judge0"
+      });
 
       const { output, stderr, compile_output, status } = submission.data;
-setOutput(output || stderr || compile_output || `No output (status: ${status})`);
+      setOutput(output || stderr || compile_output || `No output (status: ${status})`);
 
+      if (stderr || compile_output) {
+        toast({
+          title: "Error",
+          description: stderr || compile_output,
+          variant: "destructive",
+        });
+      }
     } catch (error) {
+      console.error('Code execution error:', error);
       setOutput("Error executing code");
-      console.error("Execution error:", error);
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || error.message,
+        variant: "destructive",
+      });
     }
     setIsLoading(false);
   };
 
   const handleReset = () => {
-    setCode(templateMap[language]);
+    onCodeChange(templateMap[language]);
     setOutput("");
   };
 
@@ -75,7 +77,7 @@ setOutput(output || stderr || compile_output || `No output (status: ${status})`)
       <CardHeader>
         <CardTitle>Code Editor</CardTitle>
         <div className="flex items-center space-x-4">
-          <Select defaultValue={language} onValueChange={handleLanguageChange}>
+          <Select value={language} onValueChange={handleLanguageChange}>
             <SelectTrigger className="w-40">
               <SelectValue />
             </SelectTrigger>
@@ -91,7 +93,7 @@ setOutput(output || stderr || compile_output || `No output (status: ${status})`)
             <Button
               variant="link"
               className="p-0 h-auto"
-              onClick={() => setCode(templateMap[language])}
+              onClick={() => onCodeChange(templateMap[language])}
             >
               Load starter code
             </Button>
@@ -105,7 +107,7 @@ setOutput(output || stderr || compile_output || `No output (status: ${status})`)
             className="bg-transparent border-none text-white font-mono resize-none focus:outline-none min-h-[300px]"
             placeholder="Write your code here..."
             value={code}
-            onChange={(e) => setCode(e.target.value)}
+            onChange={(e) => onCodeChange(e.target.value)}
           />
         </div>
         <div className="flex justify-between items-center mt-4">
@@ -123,7 +125,10 @@ setOutput(output || stderr || compile_output || `No output (status: ${status})`)
               Reset
             </Button>
           </div>
-          <Button className="bg-green-600 hover:bg-green-700">
+          <Button 
+            className="bg-green-600 hover:bg-green-700"
+            disabled={true}
+          >
             <Upload className="mr-2 h-4 w-4" />
             Submit Solution
           </Button>

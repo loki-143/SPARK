@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ProblemHeader from "../components/ProblemHeader";
 import ProblemOverview from "../components/ProblemOverview";
 import ProblemStatement from "../components/ProblemStatement";
@@ -6,16 +6,50 @@ import ProblemExample from "../components/ProblemExample";
 import CodeEditor from "../components/CodeEditor";
 import Submissions from "../components/Submissions";
 import TestCases from "../components/TestCases";
+import { useToast } from "@/components/ui/use-toast";
 
 const ProblemPage = () => {
+  const [code, setCode] = useState("");
+  const [language, setLanguage] = useState("python");
+  const [submissions, setSubmissions] = useState([]);
+  const { toast } = useToast();
 
+  const handleCodeChange = (newCode) => {
+    setCode(newCode);
+  };
 
+  const handleLanguageChange = (newLanguage) => {
+    setLanguage(newLanguage);
+  };
+
+  const handleTestComplete = (results) => {
+    const allPassed = results.every(result => result.passed);
+    if (allPassed) {
+      toast({
+        title: "Success",
+        description: "All test cases passed!",
+      });
+    } else {
+      toast({
+        title: "Test Cases Failed",
+        description: "Some test cases failed. Please check the results.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleSubmissionComplete = (submission) => {
+    setSubmissions(prev => [submission, ...prev]);
+    toast({
+      title: "Success",
+      description: "Solution submitted successfully",
+    });
+  };
 
   return (
     <div className="min-h-screen bg-slate-50">
-
       {/* Header */}
-      {<ProblemHeader />}
+      <ProblemHeader />
       {/*Header Closed */}
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -40,16 +74,23 @@ const ProblemPage = () => {
           <div className="space-y-6">
 
             {/* Code Editor */}
-            {<CodeEditor />}
+            <CodeEditor 
+              problemId="two-sum" // This should come from your routing/state management
+              onSubmissionComplete={handleSubmissionComplete}
+            />
             {/* Code Editor Closed */}
 
-            {/* Submissions */}
-            {<Submissions />}
-            {/* Submissions Closed - also render when the code is submited and api is called*/}
-
             {/* Test Cases */}
-            {<TestCases />}
+            <TestCases 
+              code={code}
+              language={language}
+              onTestComplete={handleTestComplete}
+            />
             {/* Test Cases Closed */}
+
+            {/* Submissions */}
+            <Submissions submissions={submissions} />
+            {/* Submissions Closed - also render when the code is submited and api is called*/}
 
           </div>
         </div>
