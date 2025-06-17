@@ -29,6 +29,7 @@ function App() {
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="*" element={<NotFound />} />
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/problems/:slug" element={<ProblemPage />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ProblemHeader from "../components/ProblemHeader";
 import ProblemOverview from "../components/ProblemOverview";
 import ProblemStatement from "../components/ProblemStatement";
@@ -7,12 +7,25 @@ import CodeEditor from "../components/CodeEditor";
 import Submissions from "../components/Submissions";
 import TestCases from "../components/TestCases";
 import { useToast } from "@/components/ui/use-toast";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const ProblemPage = () => {
   const [code, setCode] = useState("");
   const [language, setLanguage] = useState("python");
   const [submissions, setSubmissions] = useState([]);
   const { toast } = useToast();
+
+  const { slug } = useParams();
+  const [problem, setProblem] = useState(null);
+
+  useEffect(() => {
+    axios.get(`http://localhost:3000/api/problems/${slug}`)
+      .then(res => setProblem(res.data))
+      .catch(err => console.error(err));
+  }, [slug]);
+
+  if (!problem) return <div>Loading...</div>;
 
   const handleCodeChange = (newCode) => {
     setCode(newCode);
@@ -49,7 +62,7 @@ const ProblemPage = () => {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <ProblemHeader />
+      <ProblemHeader problem={problem} />
       {/*Header Closed */}
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
